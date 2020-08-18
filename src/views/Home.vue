@@ -2,6 +2,7 @@
   <div class="home">
     <h1>{{ message }}</h1>
     <div id="map"></div>
+    <button id="pause"></button>
 
   </div>
 </template>
@@ -18,7 +19,20 @@ body {
   width: 100%;
 }
 </style>
+<style>
+button {
+  position: absolute;
+  margin: 20px;
+}
 
+#pause::after {
+  content: "Pause";
+}
+
+#pause.pause::after {
+  content: "Play";
+}
+</style>
 <script>
 /* global mapboxgl */
 export default {
@@ -36,7 +50,27 @@ export default {
       zoom: 9, // starting zoom
     });
     var marker = new mapboxgl.Marker().setLngLat([-87.6298, 41.8781]).addTo(map);
+
+    var geojson = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "LineString",
+            coordinates: [[-87.6298, 41.8781]],
+          },
+        },
+      ],
+    };
+    var speedFactor = 30; // number of frames per longitude degree
+    var animation; // to store and cancel the animation
+    var startTime = 0;
+    var progress = 0; // progress = timestamp - startTime
+    var resetTime = false; // indicator of whether time reset is needed for the animation
+    var pauseButton = document.getElementById("pause");
   },
+
   methods: {},
 };
 </script>
